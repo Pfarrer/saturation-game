@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+    "model",
+    "construction",
+    
+    "milestones/milestone-01",
+
+    "game",
+]
