@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ConstructionKind {
     Base,
     Collector,
 }
 
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Clone)]
 pub struct Construction {
     pub location: Vec2,
     pub kind: ConstructionKind,

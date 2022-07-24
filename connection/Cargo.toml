@@ -1,0 +1,10 @@
+[package]
+name = "connection"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+model = { path = "../model" }
+
+bevy = "0.7.0"
+bevy_prototype_lyon = "0.5.0"
