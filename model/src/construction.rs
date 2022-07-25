@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ConstructionKind {
     Base,
     Collector,
+    Extractor,
 }
 
 #[derive(Component, Debug, Clone)]

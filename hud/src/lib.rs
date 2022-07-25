@@ -21,7 +21,7 @@ fn create_hud(mut commands: Commands, font_assets: Res<AssetServer>) {
             ..default()
         },
         text: Text::with_section(
-            "Resources: ",
+            "",
             TextStyle {
                 font: font_assets.load("fonts/OpenSans.ttf"),
                 font_size: 25.,
@@ -35,6 +35,13 @@ fn create_hud(mut commands: Commands, font_assets: Res<AssetServer>) {
 
 fn update_hud(mut hud_query: Query<&mut Text>, resources: Res<PlayerResources>) {
     for mut hud in hud_query.iter_mut() {
-        hud.sections[0].value = format!("Resources: {:.0} Material", resources.material);
+        hud.sections[0].value = format!(
+            "{:.0} Material (+{:.1}/s), Energy: {}/{} ({:.1}%)",
+            resources.material_available,
+            resources.material_rate_per_second,
+            resources.energy_need,
+            resources.energy_available,
+            resources.energy_need / resources.energy_available
+        );
     }
 }

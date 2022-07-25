@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
-use model::construction::Construction;
+use model::{construction::Construction, RemovalEvent};
 
 const Z_VALUE: f32 = 100.;
 
@@ -77,13 +77,13 @@ fn update_influence_shape_system(
 
 fn remove_influence_shape_system(
     mut commands: Commands,
-    removals: RemovedComponents<Construction>,
+    mut removal_events: EventReader<RemovalEvent<Construction>>,
     query: Query<(Entity, &InfluenceShape)>,
 ) {
-    for entity in removals.iter() {
+    for event in removal_events.iter() {
         query
             .iter()
-            .filter(|(_, influence_shape)| influence_shape.construction == entity)
+            .filter(|(_, influence_shape)| influence_shape.construction == event.entity)
             .for_each(|(shape_entity, _)| {
                 debug!(
                     "Despawning InfluenceShape of Construction {:?}",

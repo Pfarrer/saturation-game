@@ -1,12 +1,14 @@
 use bevy::asset::AssetServerSettings;
 use bevy::prelude::*;
-use construction::ConstructionShapePlugin;
 use connection::ConnectionShapePlugin;
+use construction::ConstructionShapePlugin;
+use game::GamePlugin;
 use hud::HudPlugin;
 use influence::InfluenceShapePlugin;
 use model::{
     connection::Connection,
     construction::{Construction, ConstructionKind},
+    ModelPlugin,
 };
 use resources::ResourcesPlugin;
 
@@ -18,6 +20,8 @@ fn main() {
             watch_for_changes: false,
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(ModelPlugin)
+        .add_plugin(GamePlugin)
         .add_startup_system(init_camera_system)
         .add_plugin(ResourcesPlugin)
         .add_plugin(ConstructionShapePlugin)
@@ -62,7 +66,7 @@ fn init_game_system(mut commands: Commands) {
         .spawn()
         .insert(Construction {
             location: Vec2::new(-100., 175.),
-            kind: ConstructionKind::Collector,
+            kind: ConstructionKind::Extractor,
             influence_radius: 50.,
         })
         .id();
@@ -72,12 +76,18 @@ fn init_game_system(mut commands: Commands) {
             collector2_construction_entity.clone(),
         ),
     });
+    commands.spawn().insert(Connection {
+        between: (
+            collector1_construction_entity.clone(),
+            collector2_construction_entity.clone(),
+        ),
+    });
 
     let collector3_construction_entity = commands
         .spawn()
         .insert(Construction {
             location: Vec2::new(200., -75.),
-            kind: ConstructionKind::Collector,
+            kind: ConstructionKind::Extractor,
             influence_radius: 50.,
         })
         .id();

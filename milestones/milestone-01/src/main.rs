@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use connection::ConnectionShapePlugin;
 use construction::ConstructionShapePlugin;
 use game::GamePlugin;
+use influence::InfluenceShapePlugin;
 use model::{
     connection::Connection,
     construction::{Construction, ConstructionKind},
@@ -20,6 +21,7 @@ fn main() {
         .add_plugin(ModelPlugin)
         .add_plugin(GamePlugin)
         .add_plugin(ConstructionShapePlugin)
+        .add_plugin(InfluenceShapePlugin)
         .add_plugin(ConnectionShapePlugin)
         .add_startup_system(init_system)
         .add_system(demo_movement_system)
@@ -35,7 +37,7 @@ fn init_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(0., 0.),
             kind: ConstructionKind::Base,
-            influence_radius: 20.,
+            influence_radius: 50.,
         })
         .id();
     commands.insert_resource(MovementEntity(movement_entity));
@@ -90,7 +92,7 @@ fn demo_blinker_system(
                 .spawn()
                 .insert(Construction {
                     location: Vec2::new(50., 100.),
-                    kind: ConstructionKind::Base,
+                    kind: ConstructionKind::Extractor,
                     influence_radius: 20.,
                 })
                 .id();

@@ -7,6 +7,7 @@ edition = "2021"
 model = { path = "../../model" }
 game = { path = "../../game" }
 construction = { path = "../../construction" }
+influence = { path = "../../influence" }
 connection = { path = "../../connection" }
 
 bevy = "0.7.0"
