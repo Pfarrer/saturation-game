@@ -1,9 +1,12 @@
-use bevy::prelude::{Entity, App, Plugin};
+use bevy::prelude::{App, Entity, Plugin};
 use connection::Connection;
 use construction::Construction;
+use game::{GameEvent, GameMode};
 
 pub mod connection;
 pub mod construction;
+pub mod game;
+pub mod game_settings;
 pub mod resources;
 
 #[derive(Debug)]
@@ -17,6 +20,10 @@ pub struct ModelPlugin;
 impl Plugin for ModelPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<RemovalEvent<Construction>>()
-            .add_event::<RemovalEvent<Connection>>();
+            .add_event::<RemovalEvent<Connection>>()
+            .add_event::<GameEvent>()
+            .insert_resource(game_settings::GameSettings)
+            .insert_resource(GameMode::Idle)
+            .add_system(game::game_mode_debug_system);
     }
 }

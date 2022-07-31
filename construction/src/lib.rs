@@ -2,16 +2,21 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
 use model::{construction::Construction, RemovalEvent};
 
+mod build_mode;
+
 const Z_VALUE: f32 = 100.;
 
 pub struct ConstructionShapePlugin;
 
 impl Plugin for ConstructionShapePlugin {
     fn build(&self, app: &mut App) {
+        println!("connections");
         app.add_plugin(ShapePlugin)
             .add_system(spawn_construction_shape_system)
             .add_system(update_construction_shape_system)
-            .add_system(remove_construction_shape_system);
+            .add_system(remove_construction_shape_system)
+            .add_system(build_mode::enter_exit_build_mode_system)
+            .add_system(build_mode::build_mode_update_system);
     }
 }
 

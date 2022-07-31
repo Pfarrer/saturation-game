@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use model::{
-    construction::{Construction, ConstructionKind},
+    construction::Construction, game::GameEvent, game_settings::GameSettings,
     resources::PlayerResources,
 };
 
@@ -9,7 +9,8 @@ pub struct ResourcesPlugin;
 impl Plugin for ResourcesPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(init_system)
-            .add_system(update_available_resources);
+            .add_system(update_available_resources)
+            .add_system(on_game_event_resource_system);
     }
 }
 
@@ -28,26 +29,42 @@ fn update_available_resources(
     time: Res<Time>,
     query: Query<&Construction>,
     mut player_resources: ResMut<PlayerResources>,
+    game_settings: Res<GameSettings>,
 ) {
     let time_delta = time.delta().as_secs_f64();
 
-    // material_available
-    let material_rate_per_second = query
-        .iter()
-        .filter(|c| c.kind == ConstructionKind::Extractor)
-        .fold(0., |acc, _| acc + 1.);
+    // material_rate_per_second & material_available
+    let material_rate_per_second = query.iter().fold(0., |acc, construction| {
+        acc + game_settings.material_output(&construction.kind)
+    });
     player_resources.as_mut().material_rate_per_second = material_rate_per_second;
     player_resources.as_mut().material_available += time_delta * material_rate_per_second;
 
     // energy_need
-    let (energy_need, energy_available) =
-        query
-            .iter()
-            .fold((0., 0.), |acc, construction| match construction.kind {
-                ConstructionKind::Base => (acc.0, acc.1 + 10.),
-                ConstructionKind::Collector => (acc.0, acc.1 + 5.),
-                ConstructionKind::Extractor => (acc.0 + 3., acc.1),
-            });
+    let energy_need = query.iter().fold(0., |acc, construction| {
+        acc + game_settings.energy_input(&construction.kind)
+    });
     player_resources.as_mut().energy_need = energy_need;
+
+    // energy_available
+    let energy_available = query.iter().fold(0., |acc, construction| {
+        acc + game_settings.energy_output(&construction.kind)
+    });
     player_resources.as_mut().energy_available = energy_available;
+}
+
+fn on_game_event_resource_system(
+    mut game_events: EventReader<GameEvent>,
+    mut player_resources: ResMut<PlayerResources>,
+    game_settings: Res<GameSettings>,
+) {
+    for event in game_events.iter() {
+        match event {
+            &GameEvent::BuildConstruction(_, ref kind) => {
+                player_resources.as_mut().material_available -=
+                    game_settings.material_build_demand(kind);
+            }
+            _ => (),
+        }
+    }
 }
