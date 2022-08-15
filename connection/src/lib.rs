@@ -9,7 +9,8 @@ impl Plugin for ConnectionShapePlugin {
     fn build(&self, app: &mut App) {
         app.add_system(spawn_connection_shape_system)
             .add_system(update_connection_shape_system)
-            .add_system_to_stage(CoreStage::PostUpdate, remove_connection_shape_system);
+            .add_system_to_stage(CoreStage::PostUpdate, remove_connection_shape_system)
+            .add_system(on_construction_remove_system);
     }
 }
 
@@ -87,10 +88,34 @@ fn remove_connection_shape_system(
             commands.entity(shape_entity).despawn();
 
             debug!(
-                "Despawning ConnectionShape of {:?}",
-                removal_event.component
+                "Despawning ConnectionShape {:?} of {:?}",
+                shape_entity, removal_event.component
             );
         }
+    }
+}
+
+/// On construction remove, query all connections and remove all that were connected
+/// to the construction to be removed.
+fn on_construction_remove_system(
+    mut construction_removal_events: EventReader<RemovalEvent<Construction>>,
+    mut connection_event_writer: EventWriter<RemovalEvent<Connection>>,
+    connection_query: Query<(Entity, &Connection)>,
+) {
+    for event in construction_removal_events.iter() {
+        connection_query
+            .iter()
+            .filter(|(_, connection)| connection.connects_to(event.entity))
+            .for_each(|(connection_entity, connection)| {
+                debug!(
+                    "Removing {:?} because {:?} removed",
+                    connection, event.component
+                );
+                connection_event_writer.send(RemovalEvent {
+                    entity: connection_entity,
+                    component: connection.clone(),
+                });
+            });
     }
 }
 

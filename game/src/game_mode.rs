@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use model::{
     connection::Connection,
-    construction::Construction,
+    construction::{Construction, ConstructionStatus},
     game::{GameEvent, GameMode},
 };
 
@@ -38,6 +38,7 @@ fn build_construction(
         .insert(Construction {
             location: location.clone(),
             kind: kind.clone(),
+            status: ConstructionStatus::Operating,
             influence_radius: 20.,
         })
         .id();

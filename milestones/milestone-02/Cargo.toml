@@ -6,10 +6,5 @@ edition = "2021"
 [dependencies]
 model = { path = "../../model" }
 game = { path = "../../game" }
-resources = { path = "../../resources" }
-construction = { path = "../../construction" }
-influence = { path = "../../influence" }
-connection = { path = "../../connection" }
-hud = { path = "../../hud" }
 
 bevy = "0.7.0"

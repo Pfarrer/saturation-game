@@ -1,16 +1,10 @@
 use bevy::asset::AssetServerSettings;
 use bevy::prelude::*;
-use connection::ConnectionShapePlugin;
-use construction::ConstructionShapePlugin;
 use game::GamePlugin;
-use hud::HudPlugin;
-use influence::InfluenceShapePlugin;
 use model::{
     connection::Connection,
-    construction::{Construction, ConstructionKind},
-    ModelPlugin,
+    construction::{Construction, ConstructionKind, ConstructionStatus},
 };
-use resources::ResourcesPlugin;
 
 fn main() {
     App::new()
@@ -20,21 +14,9 @@ fn main() {
             watch_for_changes: false,
         })
         .add_plugins(DefaultPlugins)
-        .add_plugin(ModelPlugin)
         .add_plugin(GamePlugin)
-        .add_startup_system(init_camera_system)
-        .add_plugin(ResourcesPlugin)
-        .add_plugin(ConstructionShapePlugin)
-        .add_plugin(InfluenceShapePlugin)
-        .add_plugin(ConnectionShapePlugin)
-        .add_plugin(HudPlugin)
         .add_startup_system(init_game_system)
         .run();
-}
-
-fn init_camera_system(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(UiCameraBundle::default());
 }
 
 fn init_game_system(mut commands: Commands) {
@@ -43,6 +25,7 @@ fn init_game_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(0., 0.),
             kind: ConstructionKind::Base,
+            status: ConstructionStatus::Operating,
             influence_radius: 70.,
         })
         .id();
@@ -52,6 +35,7 @@ fn init_game_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(0., 125.),
             kind: ConstructionKind::Collector,
+            status: ConstructionStatus::Operating,
             influence_radius: 50.,
         })
         .id();
@@ -67,6 +51,7 @@ fn init_game_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(-100., 175.),
             kind: ConstructionKind::Extractor,
+            status: ConstructionStatus::Operating,
             influence_radius: 50.,
         })
         .id();
@@ -88,6 +73,7 @@ fn init_game_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(200., -75.),
             kind: ConstructionKind::Extractor,
+            status: ConstructionStatus::Operating,
             influence_radius: 50.,
         })
         .id();

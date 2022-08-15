@@ -1,11 +1,9 @@
 [package]
-name = "construction"
+name = "collision"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 model = { path = "../model" }
-logic = { path = "../logic" }
 
 bevy = "0.7.0"
-bevy_prototype_lyon = "0.5.0"

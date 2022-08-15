@@ -15,8 +15,10 @@ impl Plugin for ConstructionShapePlugin {
             .add_system(spawn_construction_shape_system)
             .add_system(update_construction_shape_system)
             .add_system(remove_construction_shape_system)
-            .add_system(build_mode::enter_exit_build_mode_system)
-            .add_system(build_mode::build_mode_update_system);
+            .add_system(build_mode::enter_build_mode_system)
+            .add_system(build_mode::exit_build_mode_system)
+            .add_system(build_mode::build_mode_on_mouse_move_system)
+            .add_system(build_mode::build_mode_on_mouse_click_system);
     }
 }
 
@@ -58,7 +60,7 @@ fn spawn_construction_shape_system(
         });
 
         debug!(
-            "Entity {:?} added, ConstructionShape spawned for {:?}",
+            "ConstructionShape spawned for entity: {:?} -> {:?}",
             entity, construction
         );
     }
@@ -69,10 +71,10 @@ fn update_construction_shape_system(
     mut transform_query: Query<&mut Transform>,
 ) {
     for (shape_ref, construction) in construction_query.iter() {
-        transform_query
-            .get_mut(shape_ref.construction_shape)
-            .unwrap()
-            .translation = construction.location.extend(Z_VALUE);
+        let transform_result = transform_query.get_mut(shape_ref.construction_shape);
+        if let Ok(mut transform) = transform_result {
+            transform.translation = construction.location.extend(Z_VALUE);
+        }
     }
 }
 
@@ -87,8 +89,8 @@ fn remove_construction_shape_system(
             .filter(|(_, construction_shape)| construction_shape.construction == event.entity)
             .for_each(|(shape_entity, _)| {
                 debug!(
-                    "Despawning ConstrctionShape of Construction {:?}",
-                    shape_entity
+                    "Despawning ConstructionShape {:?} of Construction {:?}",
+                    shape_entity, event.entity
                 );
                 commands.entity(shape_entity).despawn();
             });

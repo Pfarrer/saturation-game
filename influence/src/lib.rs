@@ -57,7 +57,7 @@ fn spawn_influence_shape_system(
         });
 
         debug!(
-            "Entity {:?} added, InfluenceShape spawned for {:?}",
+            "InfluenceShape spawned for entity: {:?} -> {:?}",
             entity, construction
         );
     }
@@ -68,10 +68,10 @@ fn update_influence_shape_system(
     mut transform_query: Query<&mut Transform>,
 ) {
     for (shape_ref, construction) in construction_query.iter() {
-        transform_query
-            .get_mut(shape_ref.influence_shape)
-            .unwrap()
-            .translation = construction.location.extend(Z_VALUE);
+        let transform_result = transform_query.get_mut(shape_ref.influence_shape);
+        if let Ok(mut transform) = transform_result {
+            transform.translation = construction.location.extend(Z_VALUE);
+        }
     }
 }
 

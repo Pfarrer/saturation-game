@@ -1,14 +1,11 @@
 use std::f64::consts::PI;
 
 use bevy::prelude::*;
-use connection::ConnectionShapePlugin;
-use construction::ConstructionShapePlugin;
 use game::GamePlugin;
-use influence::InfluenceShapePlugin;
 use model::{
     connection::Connection,
-    construction::{Construction, ConstructionKind},
-    ModelPlugin, RemovalEvent,
+    construction::{Construction, ConstructionKind, ConstructionStatus},
+    RemovalEvent,
 };
 
 struct BlinkerEntity(Option<Entity>);
@@ -18,11 +15,7 @@ fn main() {
     App::new()
         .insert_resource(Msaa { samples: 4 })
         .add_plugins(DefaultPlugins)
-        .add_plugin(ModelPlugin)
         .add_plugin(GamePlugin)
-        .add_plugin(ConstructionShapePlugin)
-        .add_plugin(InfluenceShapePlugin)
-        .add_plugin(ConnectionShapePlugin)
         .add_startup_system(init_system)
         .add_system(demo_movement_system)
         .add_system(demo_blinker_system)
@@ -30,13 +23,12 @@ fn main() {
 }
 
 fn init_system(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-
     let movement_entity = commands
         .spawn()
         .insert(Construction {
             location: Vec2::new(0., 0.),
             kind: ConstructionKind::Base,
+            status: ConstructionStatus::Operating,
             influence_radius: 50.,
         })
         .id();
@@ -47,6 +39,7 @@ fn init_system(mut commands: Commands) {
         .insert(Construction {
             location: Vec2::new(0., -100.),
             kind: ConstructionKind::Collector,
+            status: ConstructionStatus::Operating,
             influence_radius: 20.,
         })
         .id();
@@ -93,6 +86,7 @@ fn demo_blinker_system(
                 .insert(Construction {
                     location: Vec2::new(50., 100.),
                     kind: ConstructionKind::Extractor,
+                    status: ConstructionStatus::Operating,
                     influence_radius: 20.,
                 })
                 .id();

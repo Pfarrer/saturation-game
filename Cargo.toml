@@ -2,15 +2,19 @@
 resolver = "2"
 members = [
     "model",
-    "game",
-    "resources",    
+    "resources",
+    "logic",
 
     "construction",
     "influence",
     "connection",
     "hud",
+    "collision",
+
+    "game",
     
     "milestones/milestone-01",
     "milestones/milestone-02",
     "milestones/milestone-03",
+    "milestones/milestone-04",
 ]

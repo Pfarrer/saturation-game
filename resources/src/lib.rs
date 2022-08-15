@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use model::{
-    construction::Construction, game::GameEvent, game_settings::GameSettings,
+    construction::{Construction, ConstructionStatus},
+    game::GameEvent,
+    game_settings::GameSettings,
     resources::PlayerResources,
 };
 
@@ -34,22 +36,31 @@ fn update_available_resources(
     let time_delta = time.delta().as_secs_f64();
 
     // material_rate_per_second & material_available
-    let material_rate_per_second = query.iter().fold(0., |acc, construction| {
-        acc + game_settings.material_output(&construction.kind)
-    });
+    let material_rate_per_second = query
+        .iter()
+        .filter(|construction| construction.status == ConstructionStatus::Operating)
+        .fold(0., |acc, construction| {
+            acc + game_settings.material_output(&construction.kind)
+        });
     player_resources.as_mut().material_rate_per_second = material_rate_per_second;
     player_resources.as_mut().material_available += time_delta * material_rate_per_second;
 
     // energy_need
-    let energy_need = query.iter().fold(0., |acc, construction| {
-        acc + game_settings.energy_input(&construction.kind)
-    });
+    let energy_need = query
+        .iter()
+        .filter(|construction| construction.status == ConstructionStatus::Operating)
+        .fold(0., |acc, construction| {
+            acc + game_settings.energy_input(&construction.kind)
+        });
     player_resources.as_mut().energy_need = energy_need;
 
     // energy_available
-    let energy_available = query.iter().fold(0., |acc, construction| {
-        acc + game_settings.energy_output(&construction.kind)
-    });
+    let energy_available = query
+        .iter()
+        .filter(|construction| construction.status == ConstructionStatus::Operating)
+        .fold(0., |acc, construction| {
+            acc + game_settings.energy_output(&construction.kind)
+        });
     player_resources.as_mut().energy_available = energy_available;
 }
 
