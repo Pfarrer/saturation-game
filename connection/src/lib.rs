@@ -27,11 +27,11 @@ struct ConnectionShape {
 fn spawn_connection_shape_system(
     mut commands: Commands,
     query: Query<(Entity, &Connection), Added<Connection>>,
-    constuction_query: Query<&Construction>,
+    construction_query: Query<&Construction>,
 ) {
     for (connection_entity, connection) in query.iter() {
-        let construction1 = constuction_query.get(connection.between.0).unwrap();
-        let construction2 = constuction_query.get(connection.between.1).unwrap();
+        let construction1 = construction_query.get(connection.between.0).unwrap();
+        let construction2 = construction_query.get(connection.between.1).unwrap();
         let shape_entity = spawn_connection_shape(
             &mut commands,
             construction1.location,
@@ -40,8 +40,9 @@ fn spawn_connection_shape_system(
         );
 
         debug!(
-            "ConnectionShape {:?} spawned for {:?}",
-            shape_entity, connection
+            "ConnectionShape {:?} spawned for {:?} ({:?}, {} to {})",
+            shape_entity, connection, connection.between, construction1.location,
+            construction2.location,
         );
     }
 }
@@ -50,15 +51,15 @@ fn update_connection_shape_system(
     mut commands: Commands,
     construction_changed_query: Query<Entity, Changed<Construction>>,
     connection_query: Query<(&Connection, &ConnectionShapeRef)>,
-    constuction_query: Query<&Construction>,
+    construction_query: Query<&Construction>,
 ) {
     for construction_entity in construction_changed_query.iter() {
         let connections = connection_query
             .iter()
             .filter(|(connection, _)| connection.connects_to(construction_entity));
         for (connection, shape_ref) in connections {
-            let construction1 = constuction_query.get(connection.between.0).unwrap();
-            let construction2 = constuction_query.get(connection.between.1).unwrap();
+            let construction1 = construction_query.get(connection.between.0).unwrap();
+            let construction2 = construction_query.get(connection.between.1).unwrap();
             update_connection_shape(
                 &mut commands,
                 construction1.location,

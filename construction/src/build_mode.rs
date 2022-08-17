@@ -5,6 +5,7 @@ use model::{
 };
 
 use bevy::{input::mouse::MouseMotion, prelude::*, render::camera::Camera2d};
+use model::collision::Collisions;
 
 pub(crate) fn enter_build_mode_system(
     mut commands: Commands,
@@ -40,7 +41,7 @@ pub(crate) fn exit_build_mode_system(
 
     query.iter().for_each(|(entity, construction)| {
         event_writer.send(RemovalEvent {
-            entity: entity,
+            entity,
             component: construction.clone(),
         })
     });
@@ -48,7 +49,6 @@ pub(crate) fn exit_build_mode_system(
 
 pub(crate) fn build_mode_on_mouse_move_system(
     mut under_construction_query: Query<&mut Construction, With<UnderConstructionMarker>>,
-    other_constructions_query: Query<&Construction, Without<UnderConstructionMarker>>,
     mouse_motion_events: EventReader<MouseMotion>,
     windows: Res<Windows>,
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
@@ -59,26 +59,28 @@ pub(crate) fn build_mode_on_mouse_move_system(
 
     for mut construction in under_construction_query.iter_mut() {
         if let Some(world_location) = logic::window_to_world(&windows, &camera_query) {
-            logic::construction::move_to(
-                &world_location,
-                construction.as_mut(),
-                other_constructions_query.iter().collect(),
-            );
+            construction.as_mut().location = world_location;
         }
     }
 }
 
 pub(crate) fn build_mode_on_mouse_click_system(
-    under_construction_query: Query<&Construction, With<UnderConstructionMarker>>,
+    under_construction_query: Query<(&Construction, &Collisions), With<UnderConstructionMarker>>,
     mouse_buttons: Res<Input<MouseButton>>,
     mut game_event_writer: EventWriter<GameEvent>,
 ) {
-    for construction in under_construction_query.iter() {
+    for (construction, collisions) in under_construction_query.iter() {
         if mouse_buttons.just_pressed(MouseButton::Left) {
-            game_event_writer.send(GameEvent::BuildConstruction(
-                construction.location,
-                construction.kind.clone(),
-            ));
+            if collisions.0.is_empty() {
+                game_event_writer.send(GameEvent::BuildConstruction(
+                    construction.location,
+                    construction.kind.clone(),
+                ));
+            } else {
+                // There are collisions, so the construction cannot be build here. Switch back to
+                // default game mode
+                game_event_writer.send(GameEvent::SwitchToGameMode(GameMode::Idle));
+            }
         }
     }
 }

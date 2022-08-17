@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use collision::CollisionPlugin;
 use connection::ConnectionShapePlugin;
 use construction::ConstructionShapePlugin;
 use hud::HudPlugin;
@@ -19,7 +20,7 @@ impl Plugin for GamePlugin {
             .add_plugin(InfluenceShapePlugin)
             .add_plugin(ConnectionShapePlugin)
             .add_plugin(HudPlugin)
-            // .add_plugin(CollisionPlugin)
+            .add_plugin(CollisionPlugin)
             .add_system(on_construction_remove_system)
             .add_system(game_mode::switch_game_mode_system);
     }
@@ -39,14 +40,3 @@ fn on_construction_remove_system(
         commands.entity(event.entity).despawn();
     }
 }
-
-// fn on_influence_collision_system(
-//     // mut collision_events: EventReader<CollisionEvent>,
-//     mut query: Query<(&mut Construction, &Collisions)>,
-// ) {
-//     for (mut construction, collisions) in query.iter_mut() {
-//         if construction.status == ConstructionStatus::Hovering && !collisions.0.is_empty() {
-//             construction.as_mut().location -= Vec2::new(20., 20.);
-//         }
-//     }
-// }

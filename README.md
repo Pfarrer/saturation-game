@@ -9,9 +9,7 @@
   * [x] Add the construction when the player selected a build location
   * [x] Add a connection to the closest construction
   * [x] Building a new construction consumes material
-
-* Milestone 04 - Building Constraints
-  * [ ] Prevent overlapping influence areas
+  * [x] Prevent building if influence areas overlap
   * [ ] Max. connection distance
 
 * Milestone 05 - Advanced Building

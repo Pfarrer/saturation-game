@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
 use model::{construction::Construction, RemovalEvent};
+use model::collision::Collisions;
+use model::construction::{ConstructionKind, ConstructionStatus};
 
 mod build_mode;
 
@@ -34,14 +36,14 @@ struct ConstructionShape {
 
 fn spawn_construction_shape_system(
     mut commands: Commands,
-    query: Query<(Entity, &Construction), Added<Construction>>,
+    query: Query<(Entity, &Construction, Option<&Collisions>), Added<Construction>>,
 ) {
-    for (entity, construction) in query.iter() {
+    for (entity, construction, collisions) in query.iter() {
         let construction_circle = Circle {
             radius: 10.,
             center: Vec2::ZERO,
         };
-        let color = Color::GREEN;
+        let color = construction_color(construction, collisions);
 
         let bundle = GeometryBuilder::build_as(
             &construction_circle,
@@ -66,14 +68,33 @@ fn spawn_construction_shape_system(
     }
 }
 
+fn construction_color(construction: &Construction, collisions: Option<&Collisions>) -> Color {
+    let has_collisions = collisions.map_or(false, |c| !c.0.is_empty());
+    return if has_collisions && construction.status == ConstructionStatus::Hovering {
+        let mut color = Color::RED;
+        color.set_a(0.7);
+        color
+    } else {
+        match construction.kind {
+            ConstructionKind::Base => Color::GREEN,
+            ConstructionKind::Collector => Color::YELLOW,
+            ConstructionKind::Extractor => Color::BLUE,
+        }
+    }
+}
+
 fn update_construction_shape_system(
-    construction_query: Query<(&ConstructionShapeRef, &Construction), Changed<Construction>>,
-    mut transform_query: Query<&mut Transform>,
+    mut commands: Commands,
+    construction_query: Query<(&ConstructionShapeRef, &Construction, &Collisions), Changed<Construction>>,
+    mut query: Query<&mut Transform>,
 ) {
-    for (shape_ref, construction) in construction_query.iter() {
-        let transform_result = transform_query.get_mut(shape_ref.construction_shape);
-        if let Ok(mut transform) = transform_result {
+    for (shape_ref, construction, collisions) in construction_query.iter() {
+        let query_result = query.get_mut(shape_ref.construction_shape);
+        if let Ok(mut transform) = query_result {
             transform.translation = construction.location.extend(Z_VALUE);
+
+            let color = construction_color(construction, Some(collisions));
+            commands.entity(shape_ref.construction_shape).insert(DrawMode::Fill(FillMode::color(color)));
         }
     }
 }

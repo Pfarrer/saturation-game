@@ -8,20 +8,22 @@ use model::{
 pub(crate) fn switch_game_mode_system(
     mut commands: Commands,
     mut game_events: EventReader<GameEvent>,
-    game_mode: Res<GameMode>,
+    current_game_mode: Res<GameMode>,
     construction_query: Query<(Entity, &Construction)>,
 ) {
     for event in game_events.iter() {
         debug!("Processing game event: {:?}", event);
         match event {
             &GameEvent::SwitchToGameMode(ref target_mode) => {
-                if game_mode.as_ref() == &GameMode::Idle {
-                    commands.insert_resource(target_mode.clone());
-                }
+                match (current_game_mode.as_ref(), target_mode) {
+                    (&GameMode::Idle, _) => commands.insert_resource(target_mode.clone()),
+                    (&GameMode::Building(_), &GameMode::Idle) => commands.insert_resource(target_mode.clone()),
+                    _ => todo!("Switch from {:?} to {:?}", current_game_mode.as_ref(), target_mode),
+                };
             }
             &GameEvent::BuildConstruction(ref location, ref kind) => {
-                commands.insert_resource(GameMode::Idle);
                 build_construction(&mut commands, &construction_query, location, kind);
+                commands.insert_resource(GameMode::Idle);
             } // _ => panic!("Game event type not implemented: {:?}", event),
         }
     }
@@ -45,6 +47,7 @@ fn build_construction(
 
     let mut other_construction_entities = construction_query
         .iter()
+        .filter(|(_, construction)| construction.location != *location)
         .map(|(entity, construction)| (entity, construction.location.distance(*location)))
         .collect::<Vec<_>>();
     other_construction_entities.sort_by(|(_, distance1), (_, distance2)| {

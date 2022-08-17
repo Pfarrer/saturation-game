@@ -9,8 +9,7 @@ pub struct CollisionPlugin;
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(on_construction_enter_system)
-            .add_system(update_construction_collisions_system)
-            .add_system(debug_collections_system);
+            .add_system(update_construction_collisions_system);
     }
 }
 
@@ -45,10 +44,7 @@ fn update_construction_collisions_system(
             .iter()
             .filter(|(entity, _)| *entity != changed_entity)
             .filter(|(_, construction)| {
-                construction
-                    .location
-                    .distance(changed_construction.location)
-                    <= construction.influence_radius + changed_construction.influence_radius
+                logic::construction::collides_with(construction, changed_construction)
             });
         for (other_entity, _) in other_constructions {
             let mut changed_collisions = collisions_query.get_mut(changed_entity).unwrap();
@@ -75,11 +71,5 @@ fn update_construction_collisions_system(
                 entities: (changed_entity, *other_entity),
             });
         }
-    }
-}
-
-fn debug_collections_system(mut collision_events: EventReader<CollisionEvent>) {
-    for collision_event in collision_events.iter() {
-        println!("Received collision event: {:?}", collision_event);
     }
 }
