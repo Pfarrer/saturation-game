@@ -9,7 +9,7 @@ pub(crate) struct BuildButton(ConstructionKind);
 
 pub(crate) fn create_hud(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
-        .spawn_bundle(elements::root_node_bunde())
+        .spawn_bundle(elements::root_node_bundle())
         .with_children(|parent| {
             parent.spawn_bundle(elements::button_text_bundle("Build:", &asset_server));
 
@@ -44,11 +44,11 @@ pub(crate) fn menu_hud_system(
 mod elements {
     use bevy::prelude::*;
 
-    pub(crate) fn root_node_bunde() -> NodeBundle {
+    pub(crate) fn root_node_bundle() -> NodeBundle {
         NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(40.), Val::Px(40.)),
-                padding: Rect::all(Val::Px(5.)),
+                padding: UiRect::all(Val::Px(5.)),
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Stretch,
                 ..default()
@@ -62,14 +62,14 @@ mod elements {
         ButtonBundle {
             style: Style {
                 // size: Size::new(Val::Px(200.), Val::Px(30.)),
-                // margin: Rect::all(Val::Auto),
+                // margin: UiRect::all(Val::Auto),
                 justify_content: JustifyContent::Center,
                 // align_items: AlignItems::Center,
                 align_items: AlignItems::Stretch,
                 align_self: AlignSelf::Center,
-                padding: Rect::all(Val::Px(2.)),
+                padding: UiRect::all(Val::Px(2.)),
                 // position_type: PositionType::Absolute,
-                // position: Rect {
+                // position: UiRect {
                 //     bottom: Val::Px(10.),
                 //     left: Val::Px(10.),
                 //     ..default()
@@ -82,14 +82,13 @@ mod elements {
 
     pub(crate) fn button_text_bundle(text: &str, asset_server: &Res<AssetServer>) -> TextBundle {
         TextBundle {
-            text: Text::with_section(
+            text: Text::from_section(
                 text,
                 TextStyle {
                     font: asset_server.load("fonts/OpenSans/OpenSans.ttf"),
                     font_size: 25.,
                     color: Color::BLACK,
-                },
-                default(),
+                }
             ),
             ..default()
         }

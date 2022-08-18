@@ -4,7 +4,7 @@ use model::{
     RemovalEvent,
 };
 
-use bevy::{input::mouse::MouseMotion, prelude::*, render::camera::Camera2d};
+use bevy::{input::mouse::MouseMotion, prelude::*};
 use model::collision::Collisions;
 
 pub(crate) fn enter_build_mode_system(

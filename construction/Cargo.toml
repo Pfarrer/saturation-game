@@ -7,5 +7,5 @@ edition = "2021"
 model = { path = "../model" }
 logic = { path = "../logic" }
 
-bevy = "0.7.0"
-bevy_prototype_lyon = "0.5.0"
+bevy = { version = "0.8.0", default-features = false }
+bevy_prototype_lyon = "0.6.0"

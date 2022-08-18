@@ -12,7 +12,6 @@ pub struct ConstructionShapePlugin;
 
 impl Plugin for ConstructionShapePlugin {
     fn build(&self, app: &mut App) {
-        println!("connections");
         app.add_plugin(ShapePlugin)
             .add_system(spawn_construction_shape_system)
             .add_system(update_construction_shape_system)

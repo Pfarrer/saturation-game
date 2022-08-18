@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 model = { path = "../model" }
 
-bevy = "0.7.0"
+bevy = { version = "0.8.0", default-features = false, features = ["bevy_asset", "render"] }

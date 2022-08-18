@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::camera::Camera2d};
+use bevy::{prelude::*};
 
 pub fn window_to_world(
     wnds: &Res<Windows>,
@@ -18,7 +18,7 @@ pub fn window_to_world(
         let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
 
         // matrix for undoing the projection and camera transform
-        let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix.inverse();
+        let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
 
         // use it to convert ndc to world-space coordinates
         let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));

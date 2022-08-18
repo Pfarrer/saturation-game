@@ -9,21 +9,20 @@ pub(crate) fn create_hud(mut commands: Commands, asset_server: Res<AssetServer>)
         .spawn_bundle(TextBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     bottom: Val::Px(10.),
                     right: Val::Px(10.),
                     ..default()
                 },
                 ..default()
             },
-            text: Text::with_section(
+            text: Text::from_section(
                 "",
                 TextStyle {
                     font: asset_server.load("fonts/OpenSans/OpenSans.ttf"),
                     font_size: 25.,
                     color: Color::YELLOW,
-                },
-                default(),
+                }
             ),
             ..default()
         })

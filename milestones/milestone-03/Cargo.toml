@@ -7,4 +7,4 @@ edition = "2021"
 model = { path = "../../model" }
 game = { path = "../../game" }
 
-bevy = "0.7.0"
+bevy = { version = "0.8.0", default-features = false, features = ["bevy_asset", "render", "bevy_winit"] }

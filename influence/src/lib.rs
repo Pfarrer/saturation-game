@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
 use model::{construction::Construction, RemovalEvent};
 
-const Z_VALUE: f32 = 100.;
+const Z_VALUE: f32 = 90.;
 
 pub struct InfluenceShapePlugin;
 

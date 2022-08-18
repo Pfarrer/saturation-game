@@ -8,6 +8,7 @@ use model::{
 #[test]
 fn test1() {
     let mut app = App::new();
+    app.add_plugins(DefaultPlugins);
     app.add_plugin(GamePlugin);
 
     // Spawn base construction
