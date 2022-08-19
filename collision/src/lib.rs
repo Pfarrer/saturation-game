@@ -1,4 +1,5 @@
 use bevy::{prelude::*, utils::HashSet};
+use model::game_configuration::GameConfiguration;
 use model::{
     collision::{CollisionAware, CollisionEvent, CollisionStatus, Collisions},
     construction::Construction,
@@ -29,6 +30,7 @@ fn on_construction_enter_system(mut commands: Commands, query: Query<Entity, Add
 fn update_construction_collisions_system(
     changed_query: Query<(Entity, &Construction), (Changed<Construction>, With<CollisionAware>)>,
     construction_query: Query<(Entity, &Construction), With<CollisionAware>>,
+    game_configuration: Res<GameConfiguration>,
     mut collisions_query: Query<&mut Collisions>,
     mut event_writer: EventWriter<CollisionEvent>,
 ) {
@@ -44,7 +46,7 @@ fn update_construction_collisions_system(
             .iter()
             .filter(|(entity, _)| *entity != changed_entity)
             .filter(|(_, construction)| {
-                logic::construction::collides_with(construction, changed_construction)
+                logic::construction::collides_with(&game_configuration, construction, changed_construction)
             });
         for (other_entity, _) in other_constructions {
             let mut changed_collisions = collisions_query.get_mut(changed_entity).unwrap();

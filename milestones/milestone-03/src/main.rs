@@ -28,6 +28,5 @@ fn init_game_system(mut commands: Commands) {
         location: Vec2::new(0., 0.),
         kind: ConstructionKind::Base,
         status: ConstructionStatus::Operating,
-        influence_radius: 70.,
     });
 }

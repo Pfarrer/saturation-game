@@ -41,7 +41,10 @@ fn spawn_connection_shape_system(
 
         debug!(
             "ConnectionShape {:?} spawned for {:?} ({:?}, {} to {})",
-            shape_entity, connection, connection.between, construction1.location,
+            shape_entity,
+            connection,
+            connection.between,
+            construction1.location,
             construction2.location,
         );
     }

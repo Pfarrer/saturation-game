@@ -17,8 +17,14 @@ pub(crate) fn switch_game_mode_system(
             &GameEvent::SwitchToGameMode(ref target_mode) => {
                 match (current_game_mode.as_ref(), target_mode) {
                     (&GameMode::Idle, _) => commands.insert_resource(target_mode.clone()),
-                    (&GameMode::Building(_), &GameMode::Idle) => commands.insert_resource(target_mode.clone()),
-                    _ => todo!("Switch from {:?} to {:?}", current_game_mode.as_ref(), target_mode),
+                    (&GameMode::Building(_), &GameMode::Idle) => {
+                        commands.insert_resource(target_mode.clone())
+                    }
+                    _ => todo!(
+                        "Switch from {:?} to {:?}",
+                        current_game_mode.as_ref(),
+                        target_mode
+                    ),
                 };
             }
             &GameEvent::BuildConstruction(ref location, ref kind) => {
@@ -41,7 +47,6 @@ fn build_construction(
             location: location.clone(),
             kind: kind.clone(),
             status: ConstructionStatus::Operating,
-            influence_radius: 20.,
         })
         .id();
 

@@ -88,7 +88,7 @@ mod elements {
                     font: asset_server.load("fonts/OpenSans/OpenSans.ttf"),
                     font_size: 25.,
                     color: Color::BLACK,
-                }
+                },
             ),
             ..default()
         }

@@ -8,7 +8,7 @@ pub mod collision;
 pub mod connection;
 pub mod construction;
 pub mod game;
-pub mod game_settings;
+pub mod game_configuration;
 pub mod resources;
 
 #[derive(Debug)]
@@ -25,7 +25,7 @@ impl Plugin for ModelPlugin {
             .add_event::<RemovalEvent<Connection>>()
             .add_event::<GameEvent>()
             .add_event::<CollisionEvent>()
-            .insert_resource(game_settings::GameSettings)
+            .insert_resource(game_configuration::GameConfiguration)
             .insert_resource(GameMode::Idle)
             .add_system(game::game_mode_debug_system);
     }

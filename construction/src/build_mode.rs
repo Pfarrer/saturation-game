@@ -1,11 +1,12 @@
+use bevy::{input::mouse::MouseMotion, prelude::*};
+
+use model::collision::Collisions;
+
 use model::{
     construction::{Construction, ConstructionStatus, UnderConstructionMarker},
     game::{GameEvent, GameMode},
     RemovalEvent,
 };
-
-use bevy::{input::mouse::MouseMotion, prelude::*};
-use model::collision::Collisions;
 
 pub(crate) fn enter_build_mode_system(
     mut commands: Commands,
@@ -24,7 +25,6 @@ pub(crate) fn enter_build_mode_system(
                 location: logic::window_to_world(&windows, &camera_query).unwrap(),
                 kind: kind.clone(),
                 status: ConstructionStatus::Hovering,
-                influence_radius: 20.,
             })
             .insert(UnderConstructionMarker);
     }

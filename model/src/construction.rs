@@ -20,7 +20,6 @@ pub struct Construction {
     pub location: Vec2,
     pub kind: ConstructionKind,
     pub status: ConstructionStatus,
-    pub influence_radius: f32,
 }
 
 #[derive(Component)]
@@ -32,7 +31,6 @@ impl Default for Construction {
             location: Default::default(),
             kind: ConstructionKind::Base,
             status: ConstructionStatus::Operating,
-            influence_radius: Default::default(),
         }
     }
 }

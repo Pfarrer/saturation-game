@@ -22,7 +22,7 @@ pub(crate) fn create_hud(mut commands: Commands, asset_server: Res<AssetServer>)
                     font: asset_server.load("fonts/OpenSans/OpenSans.ttf"),
                     font_size: 25.,
                     color: Color::YELLOW,
-                }
+                },
             ),
             ..default()
         })

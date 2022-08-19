@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
-use model::{construction::Construction, RemovalEvent};
 use model::collision::Collisions;
 use model::construction::{ConstructionKind, ConstructionStatus};
+use model::{construction::Construction, RemovalEvent};
 
 mod build_mode;
 
@@ -79,12 +79,15 @@ fn construction_color(construction: &Construction, collisions: Option<&Collision
             ConstructionKind::Collector => Color::YELLOW,
             ConstructionKind::Extractor => Color::BLUE,
         }
-    }
+    };
 }
 
 fn update_construction_shape_system(
     mut commands: Commands,
-    construction_query: Query<(&ConstructionShapeRef, &Construction, &Collisions), Changed<Construction>>,
+    construction_query: Query<
+        (&ConstructionShapeRef, &Construction, &Collisions),
+        Changed<Construction>,
+    >,
     mut query: Query<&mut Transform>,
 ) {
     for (shape_ref, construction, collisions) in construction_query.iter() {
@@ -93,7 +96,9 @@ fn update_construction_shape_system(
             transform.translation = construction.location.extend(Z_VALUE);
 
             let color = construction_color(construction, Some(collisions));
-            commands.entity(shape_ref.construction_shape).insert(DrawMode::Fill(FillMode::color(color)));
+            commands
+                .entity(shape_ref.construction_shape)
+                .insert(DrawMode::Fill(FillMode::color(color)));
         }
     }
 }

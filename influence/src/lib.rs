@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_prototype_lyon::{prelude::*, shapes::Circle};
+use model::game_configuration::GameConfiguration;
 use model::{construction::Construction, RemovalEvent};
 
 const Z_VALUE: f32 = 90.;
@@ -26,11 +27,12 @@ struct InfluenceShape {
 
 fn spawn_influence_shape_system(
     mut commands: Commands,
+    game_configuration: Res<GameConfiguration>,
     query: Query<(Entity, &Construction), Added<Construction>>,
 ) {
     for (entity, construction) in query.iter() {
         let construction_circle = Circle {
-            radius: construction.influence_radius,
+            radius: game_configuration.influence_radius(&construction.kind),
             center: Vec2::ZERO,
         };
         let color = Color::Rgba {

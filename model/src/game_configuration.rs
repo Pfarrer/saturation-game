@@ -1,8 +1,8 @@
 use crate::construction::ConstructionKind;
 
-pub struct GameSettings;
+pub struct GameConfiguration;
 
-impl GameSettings {
+impl GameConfiguration {
     pub fn material_build_demand(&self, kind: &ConstructionKind) -> f64 {
         match kind {
             ConstructionKind::Base => f64::MAX,
@@ -32,4 +32,14 @@ impl GameSettings {
             ConstructionKind::Extractor => 4.,
         }
     }
+
+    pub fn influence_radius(&self, kind: &ConstructionKind) -> f32 {
+        match kind {
+            ConstructionKind::Base => 70.,
+            ConstructionKind::Collector => 30.,
+            ConstructionKind::Extractor => 20.,
+        }
+    }
+
+    
 }
