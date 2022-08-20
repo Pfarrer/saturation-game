@@ -29,7 +29,6 @@ fn init_system(mut commands: Commands) {
             location: Vec2::new(0., 0.),
             kind: ConstructionKind::Base,
             status: ConstructionStatus::Operating,
-            influence_radius: 50.,
         })
         .id();
     commands.insert_resource(MovementEntity(movement_entity));
@@ -40,7 +39,6 @@ fn init_system(mut commands: Commands) {
             location: Vec2::new(0., -100.),
             kind: ConstructionKind::Collector,
             status: ConstructionStatus::Operating,
-            influence_radius: 20.,
         })
         .id();
     commands.spawn().insert(Connection {
@@ -87,7 +85,6 @@ fn demo_blinker_system(
                     location: Vec2::new(50., 100.),
                     kind: ConstructionKind::Extractor,
                     status: ConstructionStatus::Operating,
-                    influence_radius: 20.,
                 })
                 .id();
             blinker_entity.0 = Some(entity);

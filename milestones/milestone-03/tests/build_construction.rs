@@ -16,7 +16,6 @@ fn test1() {
         location: Vec2::new(0., 0.),
         kind: ConstructionKind::Base,
         status: ConstructionStatus::Operating,
-        influence_radius: 70.,
     });
 
     // Simulate build button click

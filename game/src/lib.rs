@@ -4,8 +4,8 @@ use connection::ConnectionShapePlugin;
 use construction::ConstructionShapePlugin;
 use hud::HudPlugin;
 use influence::InfluenceShapePlugin;
-use logic::{LogicPlugin};
-use model::{ModelPlugin};
+use logic::LogicPlugin;
+use model::ModelPlugin;
 use resources::ResourcesPlugin;
 
 pub struct GamePlugin;

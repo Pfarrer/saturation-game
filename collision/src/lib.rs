@@ -46,7 +46,11 @@ fn update_construction_collisions_system(
             .iter()
             .filter(|(entity, _)| *entity != changed_entity)
             .filter(|(_, construction)| {
-                logic::construction::collides_with(&game_configuration, construction, changed_construction)
+                logic::construction::collides_with(
+                    &game_configuration,
+                    construction,
+                    changed_construction,
+                )
             });
         for (other_entity, _) in other_constructions {
             let mut changed_collisions = collisions_query.get_mut(changed_entity).unwrap();

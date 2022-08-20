@@ -41,5 +41,7 @@ impl GameConfiguration {
         }
     }
 
-    
+    pub fn max_connection_distance(&self) -> f32 {
+        150.
+    }
 }

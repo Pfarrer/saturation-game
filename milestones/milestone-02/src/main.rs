@@ -26,7 +26,6 @@ fn init_game_system(mut commands: Commands) {
             location: Vec2::new(0., 0.),
             kind: ConstructionKind::Base,
             status: ConstructionStatus::Operating,
-            influence_radius: 70.,
         })
         .id();
 
@@ -36,7 +35,6 @@ fn init_game_system(mut commands: Commands) {
             location: Vec2::new(0., 125.),
             kind: ConstructionKind::Collector,
             status: ConstructionStatus::Operating,
-            influence_radius: 50.,
         })
         .id();
     commands.spawn().insert(Connection {
@@ -52,7 +50,6 @@ fn init_game_system(mut commands: Commands) {
             location: Vec2::new(-100., 175.),
             kind: ConstructionKind::Extractor,
             status: ConstructionStatus::Operating,
-            influence_radius: 50.,
         })
         .id();
     commands.spawn().insert(Connection {
@@ -74,7 +71,6 @@ fn init_game_system(mut commands: Commands) {
             location: Vec2::new(200., -75.),
             kind: ConstructionKind::Extractor,
             status: ConstructionStatus::Operating,
-            influence_radius: 50.,
         })
         .id();
     commands.spawn().insert(Connection {

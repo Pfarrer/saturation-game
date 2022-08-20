@@ -1,7 +1,7 @@
 use bevy::prelude::*;
+use model::game_configuration::GameConfiguration;
 use model::{
-    connection::Connection,
-    construction::{Construction, ConstructionStatus},
+    construction::Construction,
     game::{GameEvent, GameMode},
 };
 
@@ -9,6 +9,7 @@ pub(crate) fn switch_game_mode_system(
     mut commands: Commands,
     mut game_events: EventReader<GameEvent>,
     current_game_mode: Res<GameMode>,
+    game_configuration: Res<GameConfiguration>,
     construction_query: Query<(Entity, &Construction)>,
 ) {
     for event in game_events.iter() {
@@ -28,41 +29,15 @@ pub(crate) fn switch_game_mode_system(
                 };
             }
             &GameEvent::BuildConstruction(ref location, ref kind) => {
-                build_construction(&mut commands, &construction_query, location, kind);
+                crate::construction::build_construction(
+                    &mut commands,
+                    &game_configuration,
+                    &construction_query,
+                    location,
+                    kind,
+                );
                 commands.insert_resource(GameMode::Idle);
             } // _ => panic!("Game event type not implemented: {:?}", event),
         }
     }
-}
-
-fn build_construction(
-    commands: &mut Commands,
-    construction_query: &Query<(Entity, &Construction)>,
-    location: &Vec2,
-    kind: &model::construction::ConstructionKind,
-) {
-    let new_construction_entity = commands
-        .spawn()
-        .insert(Construction {
-            location: location.clone(),
-            kind: kind.clone(),
-            status: ConstructionStatus::Operating,
-        })
-        .id();
-
-    let mut other_construction_entities = construction_query
-        .iter()
-        .filter(|(_, construction)| construction.location != *location)
-        .map(|(entity, construction)| (entity, construction.location.distance(*location)))
-        .collect::<Vec<_>>();
-    other_construction_entities.sort_by(|(_, distance1), (_, distance2)| {
-        distance1
-            .partial_cmp(distance2)
-            .unwrap_or(std::cmp::Ordering::Equal)
-    });
-    let closest_construction_entity = other_construction_entities.first().unwrap().0;
-
-    commands.spawn().insert(Connection {
-        between: (closest_construction_entity, new_construction_entity),
-    });
 }

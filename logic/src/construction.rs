@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use model::construction::Construction;
+use model::connection::Connection;
+use model::construction::{Construction, ConstructionStatus};
 use model::game_configuration::GameConfiguration;
 use model::RemovalEvent;
 
@@ -23,4 +24,33 @@ pub(crate) fn on_construction_remove_system(
         debug!("Despawning Construction {:?}", event.entity);
         commands.entity(event.entity).despawn();
     }
+}
+
+pub(crate) fn build_construction(
+    commands: &mut Commands,
+    game_configuration: &Res<GameConfiguration>,
+    construction_query: &Query<(Entity, &Construction)>,
+    location: &Vec2,
+    kind: &model::construction::ConstructionKind,
+) {
+    let new_construction_entity = commands
+        .spawn()
+        .insert(Construction {
+            location: location.clone(),
+            kind: kind.clone(),
+            status: ConstructionStatus::Operating,
+        })
+        .id();
+
+    construction_query
+        .iter()
+        .filter(|(_, construction)| {
+            let distance = construction.location.distance(*location);
+            distance > 0. && distance < game_configuration.max_connection_distance()
+        })
+        .for_each(|(entity_in_range, _)| {
+            commands.spawn().insert(Connection {
+                between: (entity_in_range, new_construction_entity),
+            });
+        });
 }

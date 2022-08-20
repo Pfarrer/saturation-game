@@ -8,9 +8,11 @@
   * [x] Add Menu HUD to allow the player to select which construction to build
   * [x] Add the construction when the player selected a build location
   * [x] Add a connection to the closest construction
-  * [ ] Add connection to construction in range
+  * [x] Add connection to any construction in range
   * [x] Building a new construction consumes material
   * [x] Prevent building if influence areas overlap
+  * [ ] Disallow crossing connections
+  * [ ] Prevent construction to overlap with connections
 
 * Milestone 04 - Map
   * [ ] Zoom in and out
