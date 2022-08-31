@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 model = { path = "../model" }
+logic = { path = "../logic" }
 
 bevy = { version = "0.8.0", default-features = false }
 bevy_prototype_lyon = "0.6.0"

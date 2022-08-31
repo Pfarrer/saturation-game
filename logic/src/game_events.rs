@@ -1,16 +1,18 @@
 use bevy::prelude::*;
+use model::connection::Connection;
 use model::game_configuration::GameConfiguration;
 use model::{
     construction::Construction,
     game::{GameEvent, GameMode},
 };
 
-pub(crate) fn switch_game_mode_system(
+pub(crate) fn process_game_events(
     mut commands: Commands,
     mut game_events: EventReader<GameEvent>,
     current_game_mode: Res<GameMode>,
     game_configuration: Res<GameConfiguration>,
     construction_query: Query<(Entity, &Construction)>,
+    connection_query: Query<&Connection>,
 ) {
     for event in game_events.iter() {
         debug!("Processing game event: {:?}", event);
@@ -33,6 +35,7 @@ pub(crate) fn switch_game_mode_system(
                     &mut commands,
                     &game_configuration,
                     &construction_query,
+                    &connection_query,
                     location,
                     kind,
                 );

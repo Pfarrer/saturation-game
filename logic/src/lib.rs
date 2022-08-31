@@ -1,14 +1,18 @@
 use bevy::prelude::*;
 
+mod connection;
+pub mod connection_energy_flow;
 pub mod construction;
-pub mod game_mode;
+pub mod game_events;
+mod utils;
 
 pub struct LogicPlugin;
 
 impl Plugin for LogicPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(game_mode::switch_game_mode_system)
-            .add_system(construction::on_construction_remove_system);
+        app.add_system(game_events::process_game_events)
+            .add_system(construction::on_construction_remove_system)
+            .add_system(connection::on_connection_remove_system);
     }
 }
 

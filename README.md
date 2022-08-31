@@ -14,12 +14,15 @@
   * [ ] Disallow crossing connections
   * [ ] Prevent construction to overlap with connections
 
-* Milestone 04 - Map
+* Milestone 04 - Active Connections
+  * [x] Visualize the energy flow in a connection by increasing the line width
+
+* Milestone ? - Map
   * [ ] Zoom in and out
   * [ ] Move the map
   * [ ] Support different areas that are suited better for certain constructions (more/less material or energy)
   * [ ] Display a map in the background
 
-* Milestone 05 - Advanced Building
+* Milestone ? - Advanced Building
   * [ ] Max. connection distance
   * [ ] Building a new construction takes time and consumes energy

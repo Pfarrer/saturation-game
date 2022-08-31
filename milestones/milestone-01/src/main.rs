@@ -41,9 +41,9 @@ fn init_system(mut commands: Commands) {
             status: ConstructionStatus::Operating,
         })
         .id();
-    commands.spawn().insert(Connection {
-        between: (movement_entity, static_entity),
-    });
+    commands
+        .spawn()
+        .insert(Connection::new_between(movement_entity, static_entity));
 
     commands.insert_resource(BlinkerEntity(None));
 }
@@ -89,9 +89,9 @@ fn demo_blinker_system(
                 .id();
             blinker_entity.0 = Some(entity);
 
-            commands.spawn().insert(Connection {
-                between: (entity, movement_entity.0),
-            });
+            commands
+                .spawn()
+                .insert(Connection::new_between(entity, movement_entity.0));
         }
     }
 }

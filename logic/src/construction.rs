@@ -1,6 +1,8 @@
 use bevy::prelude::*;
+use geo::line_intersection::line_intersection;
+use geo::{coord, Line};
 use model::connection::Connection;
-use model::construction::{Construction, ConstructionStatus};
+use model::construction::{Construction, ConstructionKind, ConstructionStatus};
 use model::game_configuration::GameConfiguration;
 use model::RemovalEvent;
 
@@ -30,8 +32,9 @@ pub(crate) fn build_construction(
     commands: &mut Commands,
     game_configuration: &Res<GameConfiguration>,
     construction_query: &Query<(Entity, &Construction)>,
+    connection_query: &Query<&Connection>,
     location: &Vec2,
-    kind: &model::construction::ConstructionKind,
+    kind: &ConstructionKind,
 ) {
     let new_construction_entity = commands
         .spawn()
@@ -42,15 +45,44 @@ pub(crate) fn build_construction(
         })
         .id();
 
+    let existing_connection_lines: Vec<_> = connection_query
+        .iter()
+        .map(|connection| {
+            let (_, construction1) = construction_query.get(connection.between().0).unwrap();
+            let (_, construction2) = construction_query.get(connection.between().1).unwrap();
+            Line::new(
+                coord! { x: construction1.location.x, y: construction1.location.y },
+                coord! { x: construction2.location.x, y: construction2.location.y },
+            )
+        })
+        .collect();
+
     construction_query
         .iter()
         .filter(|(_, construction)| {
             let distance = construction.location.distance(*location);
             distance > 0. && distance < game_configuration.max_connection_distance()
         })
-        .for_each(|(entity_in_range, _)| {
-            commands.spawn().insert(Connection {
-                between: (entity_in_range, new_construction_entity),
-            });
+        .map(|(entity_in_range, construction)| {
+            let connection = Connection::new_between(entity_in_range, new_construction_entity);
+            (connection, construction)
+        })
+        .filter(|(_, construction)| {
+            existing_connection_lines
+                .iter()
+                .all(|existing_connection_line| {
+                    let connection_line_candidate = Line::new(
+                        coord! { x: construction.location.x, y: construction.location.y },
+                        coord! { x: location.x, y: location.y },
+                    );
+                    let intersection =
+                        line_intersection(*existing_connection_line, connection_line_candidate);
+                    !intersection
+                        .map(|intersect| intersect.is_proper())
+                        .unwrap_or(false)
+                })
+        })
+        .for_each(|(connection, _)| {
+            commands.spawn().insert(connection);
         });
 }

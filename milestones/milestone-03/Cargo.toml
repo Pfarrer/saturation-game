@@ -8,3 +8,8 @@ model = { path = "../../model" }
 game = { path = "../../game" }
 
 bevy = { version = "0.8.0", default-features = false, features = ["bevy_asset", "render", "bevy_winit"] }
+
+[[test]]
+name = "tests"
+path = "tests/main.rs"
+harness = false

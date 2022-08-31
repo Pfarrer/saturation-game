@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 model = { path = "../model" }
 
-bevy = { version = "0.8.0", default-features = false }
+bevy = { version = "0.8.0", default-features = false, features = ["render"] }
+petgraph = "0.6.2"
+geo = "0.23.0"
