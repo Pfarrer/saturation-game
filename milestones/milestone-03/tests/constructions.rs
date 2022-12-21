@@ -5,7 +5,8 @@ use model::{
     game::GameEvent,
 };
 
-pub fn prevent_building_if_influence_areas_overlap() {
+#[test]
+fn prevent_building_if_influence_areas_overlap() {
     let mut app = App::new();
     app.insert_resource(AssetServerSettings {
         asset_folder: "../../assets".to_string(),

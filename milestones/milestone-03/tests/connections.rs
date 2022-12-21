@@ -6,7 +6,8 @@ use model::{
     game::GameEvent,
 };
 
-pub fn disallow_crossing_connections() {
+#[test]
+fn disallow_crossing_connections() {
     let mut app = App::new();
     app.insert_resource(AssetServerSettings {
         asset_folder: "../../assets".to_string(),
